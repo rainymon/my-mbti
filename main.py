@@ -1,11 +1,12 @@
 import streamlit as st
+import textwrap
 
 
 # ---------------------------------------------------------
 # 페이지 설정
 # ---------------------------------------------------------
 st.set_page_config(
-    page_title="MBTI 포켓몬 추천⚡⚡",
+    page_title="MBTI 포켓몬 추천",
     page_icon="⚡",
     layout="centered",
 )
@@ -16,105 +17,113 @@ st.set_page_config(
 # ---------------------------------------------------------
 st.markdown(
     """
-    <style>
-        .stApp {
-            background: linear-gradient(135deg, #fff7d6 0%, #dff4ff 100%);
-        }
+<style>
+.stApp {
+    background: linear-gradient(135deg, #fff7d6 0%, #dff4ff 100%);
+}
 
-        .main-title {
-            text-align: center;
-            font-size: 42px;
-            font-weight: 800;
-            color: #252525;
-            margin-bottom: 5px;
-        }
+.main-title {
+    text-align: center;
+    font-size: 42px;
+    font-weight: 800;
+    color: #252525;
+    margin-bottom: 5px;
+}
 
-        .sub-title {
-            text-align: center;
-            font-size: 17px;
-            color: #555555;
-            margin-bottom: 30px;
-        }
+.sub-title {
+    text-align: center;
+    font-size: 17px;
+    color: #555555;
+    margin-bottom: 30px;
+}
 
-        .result-card {
-            background-color: rgba(255, 255, 255, 0.93);
-            padding: 28px;
-            border-radius: 22px;
-            border: 3px solid #ffcb05;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-            text-align: center;
-            margin-top: 25px;
-        }
+.result-card {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 28px;
+    border-radius: 22px;
+    border: 3px solid #ffcb05;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    text-align: center;
+    margin-top: 25px;
+}
 
-        .pokemon-emoji {
-            font-size: 80px;
-            margin-bottom: 5px;
-        }
+.pokemon-emoji {
+    font-size: 80px;
+    margin-bottom: 5px;
+}
 
-        .pokemon-name {
-            font-size: 35px;
-            font-weight: 800;
-            color: #2a75bb;
-            margin-bottom: 5px;
-        }
+.pokemon-name {
+    font-size: 35px;
+    font-weight: 800;
+    color: #2a75bb;
+    margin-bottom: 5px;
+}
 
-        .pokemon-type {
-            display: inline-block;
-            background-color: #ffcb05;
-            color: #222222;
-            font-size: 15px;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 20px;
-            margin-bottom: 18px;
-        }
+.pokemon-type {
+    display: inline-block;
+    background-color: #ffcb05;
+    color: #222222;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+}
 
-        .mbti-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #333333;
-            margin-bottom: 12px;
-        }
+.mbti-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333333;
+    margin-bottom: 12px;
+}
 
-        .description {
-            font-size: 17px;
-            line-height: 1.75;
-            color: #444444;
-        }
+.description {
+    font-size: 17px;
+    line-height: 1.75;
+    color: #444444;
+}
 
-        .reason-box {
-            background-color: #f4f9ff;
-            border-radius: 14px;
-            padding: 16px;
-            margin-top: 18px;
-            text-align: left;
-        }
+.reason-box {
+    background-color: #f4f9ff;
+    border-radius: 14px;
+    padding: 16px;
+    margin-top: 18px;
+    text-align: left;
+}
 
-        .footer {
-            text-align: center;
-            color: #777777;
-            font-size: 13px;
-            margin-top: 40px;
-        }
+.reason-box ul {
+    margin-bottom: 0;
+}
 
-        div.stButton > button {
-            width: 100%;
-            border-radius: 14px;
-            border: none;
-            background-color: #ef5350;
-            color: white;
-            font-size: 18px;
-            font-weight: 700;
-            padding: 12px;
-        }
+.reason-box li {
+    margin-bottom: 8px;
+}
 
-        div.stButton > button:hover {
-            background-color: #d93f3c;
-            color: white;
-            border: none;
-        }
-    </style>
-    """,
+.footer {
+    text-align: center;
+    color: #777777;
+    font-size: 13px;
+    margin-top: 40px;
+}
+
+div.stButton > button {
+    width: 100%;
+    border-radius: 14px;
+    border: none;
+    background-color: #ef5350;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 12px;
+}
+
+div.stButton > button:hover {
+    background-color: #d93f3c;
+    color: white;
+    border: none;
+}
+</style>
+""",
     unsafe_allow_html=True,
 )
 
@@ -129,8 +138,8 @@ pokemon_data = {
         "type": "에스퍼",
         "nickname": "전략적인 설계자",
         "description": (
-            "높은 지능과 강한 독립심을 가진 뮤츠는 자신만의 계획과 기준을 중요하게 여기는 "
-            "INTJ와 잘 어울립니다."
+            "높은 지능과 강한 독립심을 가진 뮤츠는 자신만의 계획과 "
+            "기준을 중요하게 여기는 INTJ와 잘 어울립니다."
         ),
         "reasons": [
             "복잡한 상황을 빠르게 분석합니다.",
@@ -144,8 +153,8 @@ pokemon_data = {
         "type": "노말",
         "nickname": "호기심 많은 논리술사",
         "description": (
-            "어떤 모습으로도 변할 수 있는 메타몽은 다양한 가능성을 탐구하고 새로운 아이디어를 "
-            "실험하는 INTP와 닮았습니다."
+            "어떤 모습으로도 변할 수 있는 메타몽은 다양한 가능성을 탐구하고 "
+            "새로운 아이디어를 실험하는 INTP와 닮았습니다."
         ),
         "reasons": [
             "정해진 방식보다 새로운 가능성을 선호합니다.",
@@ -159,8 +168,8 @@ pokemon_data = {
         "type": "불꽃·비행",
         "nickname": "대담한 통솔자",
         "description": (
-            "강한 카리스마와 추진력을 가진 리자몽은 목표를 향해 팀을 이끄는 ENTJ의 리더십을 "
-            "잘 보여줍니다."
+            "강한 카리스마와 추진력을 가진 리자몽은 목표를 향해 "
+            "팀을 이끄는 ENTJ의 리더십을 잘 보여줍니다."
         ),
         "reasons": [
             "도전을 두려워하지 않습니다.",
@@ -174,8 +183,8 @@ pokemon_data = {
         "type": "고스트·독",
         "nickname": "재치 있는 변론가",
         "description": (
-            "장난기와 재치가 넘치는 팬텀은 새로운 자극을 즐기고 기발한 생각으로 주변을 놀라게 "
-            "하는 ENTP와 잘 어울립니다."
+            "장난기와 재치가 넘치는 팬텀은 새로운 자극을 즐기고 "
+            "기발한 생각으로 주변을 놀라게 하는 ENTP와 잘 어울립니다."
         ),
         "reasons": [
             "예측하기 어려운 매력을 가지고 있습니다.",
@@ -189,8 +198,8 @@ pokemon_data = {
         "type": "에스퍼·비행",
         "nickname": "통찰력 있는 옹호자",
         "description": (
-            "깊고 평온한 힘을 가진 루기아는 조용하지만 강한 신념으로 다른 사람을 보호하는 "
-            "INFJ와 닮았습니다."
+            "깊고 평온한 힘을 가진 루기아는 조용하지만 강한 신념으로 "
+            "다른 사람을 보호하는 INFJ와 닮았습니다."
         ),
         "reasons": [
             "겉으로는 차분하지만 내면의 힘이 강합니다.",
@@ -204,8 +213,8 @@ pokemon_data = {
         "type": "노말",
         "nickname": "따뜻한 중재자",
         "description": (
-            "다양한 모습으로 성장할 가능성을 가진 이브이는 자신의 가치와 가능성을 소중히 "
-            "여기는 INFP와 잘 어울립니다."
+            "다양한 모습으로 성장할 가능성을 가진 이브이는 자신의 가치와 "
+            "가능성을 소중히 여기는 INFP와 잘 어울립니다."
         ),
         "reasons": [
             "다양한 가능성과 잠재력을 품고 있습니다.",
@@ -219,8 +228,8 @@ pokemon_data = {
         "type": "에스퍼·페어리",
         "nickname": "정의로운 선도자",
         "description": (
-            "소중한 존재를 지키기 위해 큰 힘을 발휘하는 가디안은 타인의 성장을 돕고 사람들을 "
-            "이끄는 ENFJ와 닮았습니다."
+            "소중한 존재를 지키기 위해 큰 힘을 발휘하는 가디안은 "
+            "타인의 성장을 돕고 사람들을 이끄는 ENFJ와 닮았습니다."
         ),
         "reasons": [
             "상대방의 감정을 세심하게 살핍니다.",
@@ -234,8 +243,8 @@ pokemon_data = {
         "type": "전기",
         "nickname": "활기찬 활동가",
         "description": (
-            "밝고 에너지 넘치는 피카츄는 사람들에게 즐거움을 주며 새로운 모험을 좋아하는 "
-            "ENFP와 가장 잘 어울립니다."
+            "밝고 에너지 넘치는 피카츄는 사람들에게 즐거움을 주며 "
+            "새로운 모험을 좋아하는 ENFP와 가장 잘 어울립니다."
         ),
         "reasons": [
             "밝고 친근한 에너지를 전합니다.",
@@ -249,8 +258,8 @@ pokemon_data = {
         "type": "물",
         "nickname": "신뢰할 수 있는 현실주의자",
         "description": (
-            "단단한 방어력과 안정적인 전투 능력을 가진 거북왕은 책임감 있고 신뢰할 수 있는 "
-            "ISTJ와 잘 어울립니다."
+            "단단한 방어력과 안정적인 전투 능력을 가진 거북왕은 "
+            "책임감 있고 신뢰할 수 있는 ISTJ와 잘 어울립니다."
         ),
         "reasons": [
             "맡은 일을 끝까지 책임집니다.",
@@ -264,8 +273,8 @@ pokemon_data = {
         "type": "노말",
         "nickname": "헌신적인 수호자",
         "description": (
-            "다친 포켓몬을 돌보는 따뜻한 마음을 가진 럭키는 주변 사람을 세심하게 챙기는 "
-            "ISFJ와 닮았습니다."
+            "다친 포켓몬을 돌보는 따뜻한 마음을 가진 럭키는 "
+            "주변 사람을 세심하게 챙기는 ISFJ와 닮았습니다."
         ),
         "reasons": [
             "다른 사람을 돌보는 데서 보람을 느낍니다.",
@@ -279,8 +288,8 @@ pokemon_data = {
         "type": "불꽃",
         "nickname": "체계적인 경영자",
         "description": (
-            "충성심과 빠른 실행력을 가진 윈디는 질서와 책임을 중요하게 생각하며 조직을 "
-            "이끄는 ESTJ와 잘 어울립니다."
+            "충성심과 빠른 실행력을 가진 윈디는 질서와 책임을 중요하게 "
+            "생각하며 조직을 이끄는 ESTJ와 잘 어울립니다."
         ),
         "reasons": [
             "결단력이 있고 행동이 빠릅니다.",
@@ -294,8 +303,8 @@ pokemon_data = {
         "type": "페어리",
         "nickname": "다정한 집정관",
         "description": (
-            "사랑스럽고 친밀한 유대를 중요하게 여기는 님피아는 주변 사람을 세심하게 챙기고 "
-            "조화를 만드는 ESFJ와 닮았습니다."
+            "사랑스럽고 친밀한 유대를 중요하게 여기는 님피아는 "
+            "주변 사람을 세심하게 챙기고 조화를 만드는 ESFJ와 닮았습니다."
         ),
         "reasons": [
             "사람들과 친밀한 관계를 잘 형성합니다.",
@@ -309,8 +318,8 @@ pokemon_data = {
         "type": "물·악",
         "nickname": "냉철한 장인",
         "description": (
-            "민첩하고 침착하게 상황에 대응하는 개굴닌자는 뛰어난 관찰력과 실전 감각을 가진 "
-            "ISTP와 잘 어울립니다."
+            "민첩하고 침착하게 상황에 대응하는 개굴닌자는 "
+            "뛰어난 관찰력과 실전 감각을 가진 ISTP와 잘 어울립니다."
         ),
         "reasons": [
             "위기에서도 침착함을 유지합니다.",
@@ -324,8 +333,8 @@ pokemon_data = {
         "type": "물",
         "nickname": "온화한 모험가",
         "description": (
-            "부드럽고 자유로운 분위기를 가진 샤미드는 감수성이 풍부하고 자신의 방식대로 "
-            "세상을 경험하는 ISFP와 닮았습니다."
+            "부드럽고 자유로운 분위기를 가진 샤미드는 감수성이 풍부하고 "
+            "자신의 방식대로 세상을 경험하는 ISFP와 닮았습니다."
         ),
         "reasons": [
             "차분하고 부드러운 매력을 지녔습니다.",
@@ -339,8 +348,8 @@ pokemon_data = {
         "type": "격투·강철",
         "nickname": "대담한 사업가",
         "description": (
-            "빠른 판단력과 뛰어난 전투 감각을 가진 루카리오는 현실적인 문제를 즉시 해결하고 "
-            "도전을 즐기는 ESTP와 잘 어울립니다."
+            "빠른 판단력과 뛰어난 전투 감각을 가진 루카리오는 "
+            "현실적인 문제를 즉시 해결하고 도전을 즐기는 ESTP와 잘 어울립니다."
         ),
         "reasons": [
             "빠르게 상황을 파악하고 행동합니다.",
@@ -354,8 +363,8 @@ pokemon_data = {
         "type": "노말·페어리",
         "nickname": "자유로운 연예인",
         "description": (
-            "노래와 표현을 좋아하는 푸린은 밝은 에너지로 사람들의 관심을 모으고 순간을 즐기는 "
-            "ESFP와 닮았습니다."
+            "노래와 표현을 좋아하는 푸린은 밝은 에너지로 사람들의 "
+            "관심을 모으고 순간을 즐기는 ESFP와 닮았습니다."
         ),
         "reasons": [
             "자신을 표현하는 것을 좋아합니다.",
@@ -367,18 +376,22 @@ pokemon_data = {
 
 
 # ---------------------------------------------------------
-# 화면 구성
+# 화면 제목
 # ---------------------------------------------------------
 st.markdown(
     """
-    <div class="main-title">⚡ MBTI 포켓몬 추천</div>
-    <div class="sub-title">
-        MBTI를 선택하면 당신과 잘 어울리는 포켓몬을 추천해 드립니다.
-    </div>
-    """,
+<div class="main-title">⚡ MBTI 포켓몬 추천</div>
+<div class="sub-title">
+MBTI를 선택하면 당신과 잘 어울리는 포켓몬을 추천해 드립니다.
+</div>
+""",
     unsafe_allow_html=True,
 )
 
+
+# ---------------------------------------------------------
+# MBTI 선택
+# ---------------------------------------------------------
 mbti = st.selectbox(
     "당신의 MBTI를 선택하세요.",
     options=list(pokemon_data.keys()),
@@ -395,18 +408,21 @@ recommend_button = st.button("나와 어울리는 포켓몬 확인하기")
 if recommend_button:
     if mbti is None:
         st.warning("먼저 MBTI를 선택해 주세요.")
+
     else:
         result = pokemon_data[mbti]
+
         reason_html = "".join(
-            f"<li>{reason}</li>" for reason in result["reasons"]
+            f"<li>{reason}</li>"
+            for reason in result["reasons"]
         )
 
-        st.balloons()
-
-        st.markdown(
+        result_html = textwrap.dedent(
             f"""
             <div class="result-card">
-                <div class="pokemon-emoji">{result["emoji"]}</div>
+                <div class="pokemon-emoji">
+                    {result["emoji"]}
+                </div>
 
                 <div class="mbti-title">
                     {mbti} · {result["nickname"]}
@@ -431,12 +447,19 @@ if recommend_button:
                     </ul>
                 </div>
             </div>
-            """,
+            """
+        ).strip()
+
+        st.balloons()
+
+        st.markdown(
+            result_html,
             unsafe_allow_html=True,
         )
 
         st.info(
-            "이 추천 결과는 재미를 위한 콘텐츠이며, 공식 MBTI 또는 포켓몬 진단이 아닙니다."
+            "이 추천 결과는 재미를 위한 콘텐츠이며, "
+            "공식 MBTI 또는 포켓몬 진단이 아닙니다."
         )
 
 
@@ -445,10 +468,10 @@ if recommend_button:
 # ---------------------------------------------------------
 st.markdown(
     """
-    <div class="footer">
-        Pokémon 캐릭터의 권리는 각 권리자에게 있습니다.<br>
-        본 웹앱은 학습 및 비상업적 예시 목적으로 제작되었습니다.
-    </div>
-    """,
+<div class="footer">
+Pokémon 캐릭터의 권리는 각 권리자에게 있습니다.<br>
+본 웹앱은 학습 및 비상업적 예시 목적으로 제작되었습니다.
+</div>
+""",
     unsafe_allow_html=True,
 )
