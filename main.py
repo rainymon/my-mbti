@@ -1,10 +1,9 @@
 import streamlit as st
-import textwrap
 
 
-# ---------------------------------------------------------
-# 페이지 설정
-# ---------------------------------------------------------
+# --------------------------------------------------
+# 페이지 기본 설정
+# --------------------------------------------------
 st.set_page_config(
     page_title="MBTI 포켓몬 추천",
     page_icon="⚡",
@@ -12,125 +11,9 @@ st.set_page_config(
 )
 
 
-# ---------------------------------------------------------
-# CSS 디자인
-# ---------------------------------------------------------
-st.markdown(
-    """
-<style>
-.stApp {
-    background: linear-gradient(135deg, #fff7d6 0%, #dff4ff 100%);
-}
-
-.main-title {
-    text-align: center;
-    font-size: 42px;
-    font-weight: 800;
-    color: #252525;
-    margin-bottom: 5px;
-}
-
-.sub-title {
-    text-align: center;
-    font-size: 17px;
-    color: #555555;
-    margin-bottom: 30px;
-}
-
-.result-card {
-    background-color: rgba(255, 255, 255, 0.95);
-    padding: 28px;
-    border-radius: 22px;
-    border: 3px solid #ffcb05;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    text-align: center;
-    margin-top: 25px;
-}
-
-.pokemon-emoji {
-    font-size: 80px;
-    margin-bottom: 5px;
-}
-
-.pokemon-name {
-    font-size: 35px;
-    font-weight: 800;
-    color: #2a75bb;
-    margin-bottom: 5px;
-}
-
-.pokemon-type {
-    display: inline-block;
-    background-color: #ffcb05;
-    color: #222222;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 20px;
-    margin-bottom: 18px;
-}
-
-.mbti-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: #333333;
-    margin-bottom: 12px;
-}
-
-.description {
-    font-size: 17px;
-    line-height: 1.75;
-    color: #444444;
-}
-
-.reason-box {
-    background-color: #f4f9ff;
-    border-radius: 14px;
-    padding: 16px;
-    margin-top: 18px;
-    text-align: left;
-}
-
-.reason-box ul {
-    margin-bottom: 0;
-}
-
-.reason-box li {
-    margin-bottom: 8px;
-}
-
-.footer {
-    text-align: center;
-    color: #777777;
-    font-size: 13px;
-    margin-top: 40px;
-}
-
-div.stButton > button {
-    width: 100%;
-    border-radius: 14px;
-    border: none;
-    background-color: #ef5350;
-    color: white;
-    font-size: 18px;
-    font-weight: 700;
-    padding: 12px;
-}
-
-div.stButton > button:hover {
-    background-color: #d93f3c;
-    color: white;
-    border: none;
-}
-</style>
-""",
-    unsafe_allow_html=True,
-)
-
-
-# ---------------------------------------------------------
+# --------------------------------------------------
 # MBTI별 포켓몬 데이터
-# ---------------------------------------------------------
+# --------------------------------------------------
 pokemon_data = {
     "INTJ": {
         "pokemon": "뮤츠",
@@ -153,7 +36,7 @@ pokemon_data = {
         "type": "노말",
         "nickname": "호기심 많은 논리술사",
         "description": (
-            "어떤 모습으로도 변할 수 있는 메타몽은 다양한 가능성을 탐구하고 "
+            "다양한 모습으로 변할 수 있는 메타몽은 여러 가능성을 탐구하고 "
             "새로운 아이디어를 실험하는 INTP와 닮았습니다."
         ),
         "reasons": [
@@ -244,7 +127,7 @@ pokemon_data = {
         "nickname": "활기찬 활동가",
         "description": (
             "밝고 에너지 넘치는 피카츄는 사람들에게 즐거움을 주며 "
-            "새로운 모험을 좋아하는 ENFP와 가장 잘 어울립니다."
+            "새로운 모험을 좋아하는 ENFP와 잘 어울립니다."
         ),
         "reasons": [
             "밝고 친근한 에너지를 전합니다.",
@@ -375,23 +258,29 @@ pokemon_data = {
 }
 
 
-# ---------------------------------------------------------
+# --------------------------------------------------
+# 선택 결과를 저장할 공간
+# --------------------------------------------------
+if "selected_mbti" not in st.session_state:
+    st.session_state.selected_mbti = None
+
+
+# --------------------------------------------------
 # 화면 제목
-# ---------------------------------------------------------
-st.markdown(
-    """
-<div class="main-title">⚡ MBTI 포켓몬 추천</div>
-<div class="sub-title">
-MBTI를 선택하면 당신과 잘 어울리는 포켓몬을 추천해 드립니다.
-</div>
-""",
-    unsafe_allow_html=True,
+# --------------------------------------------------
+st.title("⚡ MBTI 포켓몬 추천")
+
+st.write(
+    "MBTI를 선택하면 당신의 성격 유형과 잘 어울리는 "
+    "포켓몬을 추천해 드립니다."
 )
 
+st.divider()
 
-# ---------------------------------------------------------
+
+# --------------------------------------------------
 # MBTI 선택
-# ---------------------------------------------------------
+# --------------------------------------------------
 mbti = st.selectbox(
     "당신의 MBTI를 선택하세요.",
     options=list(pokemon_data.keys()),
@@ -399,79 +288,70 @@ mbti = st.selectbox(
     placeholder="MBTI를 선택해 주세요.",
 )
 
-recommend_button = st.button("나와 어울리는 포켓몬 확인하기")
 
-
-# ---------------------------------------------------------
-# 추천 결과
-# ---------------------------------------------------------
-if recommend_button:
+# --------------------------------------------------
+# 추천 버튼
+# --------------------------------------------------
+if st.button(
+    "나와 어울리는 포켓몬 확인하기",
+    type="primary",
+    use_container_width=True,
+):
     if mbti is None:
         st.warning("먼저 MBTI를 선택해 주세요.")
-
     else:
-        result = pokemon_data[mbti]
-
-        reason_html = "".join(
-            f"<li>{reason}</li>"
-            for reason in result["reasons"]
-        )
-
-        result_html = textwrap.dedent(
-            f"""
-            <div class="result-card">
-                <div class="pokemon-emoji">
-                    {result["emoji"]}
-                </div>
-
-                <div class="mbti-title">
-                    {mbti} · {result["nickname"]}
-                </div>
-
-                <div class="pokemon-name">
-                    {result["pokemon"]}
-                </div>
-
-                <div class="pokemon-type">
-                    타입: {result["type"]}
-                </div>
-
-                <div class="description">
-                    {result["description"]}
-                </div>
-
-                <div class="reason-box">
-                    <strong>✨ 추천 포인트</strong>
-                    <ul>
-                        {reason_html}
-                    </ul>
-                </div>
-            </div>
-            """
-        ).strip()
-
+        st.session_state.selected_mbti = mbti
         st.balloons()
 
+
+# --------------------------------------------------
+# 추천 결과
+# --------------------------------------------------
+if st.session_state.selected_mbti is not None:
+    selected_mbti = st.session_state.selected_mbti
+    result = pokemon_data[selected_mbti]
+
+    st.divider()
+
+    with st.container(border=True):
         st.markdown(
-            result_html,
+            f"<h1 style='text-align:center'>{result['emoji']}</h1>",
             unsafe_allow_html=True,
         )
 
-        st.info(
-            "이 추천 결과는 재미를 위한 콘텐츠이며, "
-            "공식 MBTI 또는 포켓몬 진단이 아닙니다."
+        st.markdown(
+            f"<h2 style='text-align:center'>{result['pokemon']}</h2>",
+            unsafe_allow_html=True,
         )
 
+        st.markdown(
+            f"<p style='text-align:center'>"
+            f"<b>{selected_mbti} · {result['nickname']}</b>"
+            f"</p>",
+            unsafe_allow_html=True,
+        )
 
-# ---------------------------------------------------------
+        st.info(f"타입: {result['type']}")
+
+        st.write(result["description"])
+
+        st.subheader("✨ 추천 포인트")
+
+        for reason in result["reasons"]:
+            st.write(f"• {reason}")
+
+    st.caption(
+        "이 추천 결과는 재미를 위한 콘텐츠이며, "
+        "공식 MBTI 또는 포켓몬 진단이 아닙니다."
+    )
+
+
+# --------------------------------------------------
 # 하단 안내
-# ---------------------------------------------------------
-st.markdown(
-    """
-<div class="footer">
-Pokémon 캐릭터의 권리는 각 권리자에게 있습니다.<br>
-본 웹앱은 학습 및 비상업적 예시 목적으로 제작되었습니다.
-</div>
-""",
-    unsafe_allow_html=True,
+# --------------------------------------------------
+st.divider()
+
+st.caption(
+    "Pokémon 캐릭터의 권리는 각 권리자에게 있습니다. "
+    "본 웹앱은 학습 및 비상업적 예시 목적으로 제작되었습니다."
 )
